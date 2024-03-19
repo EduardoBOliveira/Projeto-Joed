@@ -1,13 +1,28 @@
 package com.example.joed.model;
 
-import java.util.Random;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-public record Produto(Long id, String nome, String icone,Categoria categoria, String descricao) {
-    public Produto(Long id, String nome, String icone, Categoria categoria, String descricao){
-        this.id = Math.abs(new Random().nextLong());
-        this.nome = nome;
-        this.icone = icone;
-        this.categoria = categoria;
-        this.descricao = descricao;
-    }
+@Entity
+@Data
+public class Produto {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @NotBlank(message = "{produto.nome.notblank}")
+    @Size(message = "{produto.nome.size}", min = 5, max = 50)
+    private String nome;
+    @Pattern(message = "{produto.pattern}",regexp = ".*\\.(png|jpg|jpeg|svg)")
+    private String icone;
+    @Size(message = "{produto.size}",min = 0, max = 255)
+    private String descricao;
+    @NotBlank(message = "{produto.categoria.notblank}")
+    private Categoria categoria;
+    @NotBlank(message = "{produto.estoque.notblank}")
+    private Estoque estoque;
 }
