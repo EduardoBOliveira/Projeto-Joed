@@ -21,7 +21,10 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.joed.model.Produto;
 import com.example.joed.repository.ProdutoRepository;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "Produto")
 @RequestMapping("produto")
 
 public class ProdutoController {

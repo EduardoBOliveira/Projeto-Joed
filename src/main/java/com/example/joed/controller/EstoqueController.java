@@ -20,7 +20,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.joed.model.Estoque;
 import com.example.joed.repository.EstoqueRepository;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
+@Tag(name = "Estoque")
 @RequestMapping("estoque")
 public class EstoqueController {
        Logger log = LoggerFactory.getLogger(getClass());

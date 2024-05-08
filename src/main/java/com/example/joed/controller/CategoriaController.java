@@ -2,12 +2,19 @@ package com.example.joed.controller;
 import com.example.joed.model.Categoria;
 import com.example.joed.repository.CategoriaRepository;
 
-import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
+@Tag(name = "categorias")
 @RequestMapping("categoria")
 public class CategoriaController {
 
@@ -32,11 +41,33 @@ public class CategoriaController {
     @Autowired
     CategoriaRepository repository;
 
-     @GetMapping
-     public List<Categoria> listarCategorias(){
-         return repository.findAll();
+    @Operation(
+        summary = "Listar Categorias",
+        description = "Retorna o array com categorias cadastradas"
+    )
+    //  @GetMapping()
+    //  public List<Categoria> listarCategorias(){
+    //      return repository.findAll();
+    //  }
+
+     @GetMapping()
+     public Page<Categoria> index(
+        @RequestParam(required = false) String categoria,
+        @PageableDefault(size = 5, direction = Direction.DESC) Pageable pageable
+     ){
+
+        if (categoria != null) {
+            return repository.findByNome(categoria, pageable);
+        }
+
+        return repository.findAll(pageable);
      }
 
+
+    @Operation(
+        summary = "Criar Categoria",
+        description = "Criar catef"
+    )
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public Categoria criarCategoria(@RequestBody Categoria categoria){ 
